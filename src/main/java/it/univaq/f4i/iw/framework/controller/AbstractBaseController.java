@@ -2,7 +2,7 @@ package it.univaq.f4i.iw.framework.controller;
 
 import it.univaq.f4i.iw.framework.data.DataLayer;
 import it.univaq.f4i.iw.framework.security.SecurityHelpers;
-import it.univaq.f4i.iw.framework.utils.ServletHelpers;
+import it.univaq.f4i.iw.framework.view.FailureResult;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -60,7 +60,7 @@ public abstract class AbstractBaseController extends HttpServlet {
             li.put("ip", s.getAttribute("ip"));
         }
     }
-    
+
     ////////////////////////////////////////////////
     private void processBaseRequest(HttpServletRequest request, HttpServletResponse response) {
         //check the session data
@@ -76,7 +76,7 @@ public abstract class AbstractBaseController extends HttpServlet {
                         accessCheckRolesFailed(request, response);
                         return;
                     }
-            } else {
+                } else {
                     accessCheckLoginFailed(request, response);
                     return;
                 }
@@ -106,16 +106,23 @@ public abstract class AbstractBaseController extends HttpServlet {
                 || (s != null && allowed_roles.stream().filter(((List<String>) s.getAttribute("roles"))::contains).findAny().isPresent()));
     }
 
+    //helper to check if the current user has a particular role, useful to further restrict to a role
+    //only particular actions of a controller
+    protected boolean checkRole(HttpServletRequest request, String role) {
+        HttpSession s = request.getSession(false);
+        return (s != null && (((List<String>) s.getAttribute("roles")).contains(role)));
+    }
+
     protected void handleError(String message, HttpServletRequest request, HttpServletResponse response) {
-        ServletHelpers.handleError(message, request, response, getServletContext());
+        new FailureResult(getServletContext()).activate(message, request, response);
     }
 
     protected void handleError(Exception exception, HttpServletRequest request, HttpServletResponse response) {
-        ServletHelpers.handleError(exception, request, response, getServletContext());
+        new FailureResult(getServletContext()).activate(exception, request, response);
     }
 
     protected void handleError(HttpServletRequest request, HttpServletResponse response) {
-        ServletHelpers.handleError(request, response, getServletContext());
+        new FailureResult(getServletContext()).activate(request, response);
     }
 
     @Override
