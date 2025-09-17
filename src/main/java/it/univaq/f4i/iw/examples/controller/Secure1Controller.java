@@ -1,8 +1,3 @@
-/*
- * TestMyDAO.java
- *
- *
- */
 package it.univaq.f4i.iw.examples.controller;
 
 import it.univaq.f4i.iw.ex.newspaper.data.model.Article;
@@ -16,15 +11,15 @@ import it.univaq.f4i.iw.framework.view.TemplateManagerException;
 import it.univaq.f4i.iw.framework.view.TemplateResult;
 import java.io.IOException;
 import java.time.LocalDate;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  *
  * @author Ingegneria del Web
  * @version
  */
-public class SecureController extends ApplicationBaseController {
+public class Secure1Controller extends ApplicationBaseController {
 
     private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, DataException, TemplateManagerException {
 

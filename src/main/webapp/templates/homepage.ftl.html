@@ -3,10 +3,12 @@
 <#if logininfo??>
 <h2>Welcome back, ${logininfo.username} </h2>
 <p>You IP address is: ${logininfo.ip} </p>
-<p>Your connection started on: ${logininfo.sessionStartTs.format('dd/MM/yyyy HH:mm:ss')}</p>
+<p>Your connection started on: ${logininfo["session-start-ts"].format('dd/MM/yyyy HH:mm:ss')}</p>
+<p>Your roles are: ${logininfo.roles?join(", ")}</p>
 <p>Now you can access both</p>
 <ul>
     <li>the <a href='secured'>secured page</a></li>
+    <li>the <a href='ultrasecured'>the very secured page (accessible only to users with role1)</a></li>
     <li>the <a href='public'>public page</a></li>
 </ul>
 
@@ -15,6 +17,7 @@
 <p>You can try to access</p>
 <ul>
     <li>the <a href='secured'>secured page</a></li>
+    <li>the <a href='ultrasecured'>the very secured page (accessible only to users with role1)</a></li>    
     <li>the <a href='public'>public page</a></li>
 </ul>
 
