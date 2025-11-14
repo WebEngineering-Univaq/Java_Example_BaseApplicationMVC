@@ -1,7 +1,5 @@
 package it.univaq.f4i.iw.ex.newspaper.data.dao.impl;
 
-
-
 import it.univaq.f4i.iw.ex.newspaper.data.dao.UserDAO;
 import it.univaq.f4i.iw.ex.newspaper.data.model.User;
 import it.univaq.f4i.iw.ex.newspaper.data.model.impl.proxy.UserProxy;
@@ -36,7 +34,7 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
             //precompiliamo tutte le query utilizzate nella classe
             //precompile all the queries uses in this class
             sUserByID = connection.prepareStatement("SELECT * FROM user WHERE ID=?");
-            sUserByName = connection.prepareStatement("SELECT ID FROM user WHERE username=?");
+            sUserByName = connection.prepareStatement("SELECT * FROM user WHERE username=?");
             iUser = connection.prepareStatement("INSERT INTO user (username,password,roles) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
             uUser = connection.prepareStatement("UPDATE user SET username=?,password=?,roles=?,version=? WHERE ID=? and version=?");
         } catch (SQLException ex) {
@@ -102,17 +100,7 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
                 sUserByID.setInt(1, user_key);
                 try ( ResultSet rs = sUserByID.executeQuery()) {
                     if (rs.next()) {
-                        //notare come utilizziamo il costrutture
-                        //"helper" della classe AuthorImpl
-                        //per creare rapidamente un'istanza a
-                        //partire dal record corrente
-                        //note how we use here the helper constructor
-                        //of the AuthorImpl class to quickly
-                        //create an instance from the current record
-
                         u = createUser(rs);
-                        //e lo mettiamo anche nella cache
-                        //and put it also in the cache
                         dataLayer.getCache().add(User.class, u);
                     }
                 }
@@ -130,7 +118,12 @@ public class UserDAO_MySQL extends DAO implements UserDAO {
             sUserByName.setString(1, username);
             try ( ResultSet rs = sUserByName.executeQuery()) {
                 if (rs.next()) {
-                    return getUser(rs.getInt("ID"));
+                    User u = createUser(rs);
+                    //non dimentichiamo anche qui la cache!
+                    //don't forget to put each record in the cache!
+                    dataLayer.getCache().add(User.class, u);
+                    return u;
+
                 }
             }
         } catch (SQLException ex) {
